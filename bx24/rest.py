@@ -1,8 +1,44 @@
 import urllib
+import requests
 
 
-class BX24:
-    pass
+class BX24(object):
+    """Класс создает объект :class:`Bitrix24 <Bitrix24>`
+    Используется для отправки запросов к REST API Битрикс24
+
+    Атрибуты:
+    :param domain: -- адрес портала Битрикс24
+    :param uid: -- идентификационный номер пользователя, от имени которого осуществляется доступ к API Битрикс24
+    :param webhook: -- вебхук для доступа к API Битрикс24
+    :param timeout: -- задержка для отправки запросов к API Битрикс24, по умолчанию 60 сек.
+
+    Использование:
+        >>> from bx24.rest import BX24
+        >>> bx24 = BX24(domain='https://yourdomain.bitrix24.ru/rest/',
+        >>>             uid=0,
+        >>>             webhook='yoursecretwebhook')
+    """
+
+    def __init__(self, domain: str, uid: int, webhook: str, timeout=60):
+        self.url = f"{domain}/{uid}/{webhook}"
+        self.timeout = timeout
+
+    def callMethod(self, api_method, params=None):
+        """Функция обращается с API Битрикс24
+
+        :param api_method: метод API
+        :param params: параметры метода
+        :return: ответ сервера
+        """
+        query = f"{self.url}/{api_method}"
+        data = http_build_query(params)
+
+        if api_method.split('.')[-1] in ['add', 'update', 'delete', 'set']:
+            query += '.json'
+            response = requests.post(query, data=data).json()
+        else:
+            response = requests.get(query, params=data).json()
+        return response
 
 
 def http_build_query(query_data,
@@ -12,11 +48,11 @@ def http_build_query(query_data,
     """Функция генерирует URL-кодированную строку запроса из предоставленного словаря или списка
 
     Аргументы:
-    :params: query_data -- словарь или список, может быть как простой одномерной структурой,
+    :param query_data: str -- словарь или список, может быть как простой одномерной структурой,
                            так и списком списков или словарем словарей
-    :params: numeric_prefix -- числовые префиксы переменных
-    :params: arg_separator -- используется в качестве разделителя аргументов, по умолчанию '&'
-    :params: enc_type -- используется для кодирования контента,
+    :param numeric_prefix: int -- числовые префиксы переменных
+    :param arg_separator: str -- используется в качестве разделителя аргументов, по умолчанию '&'
+    :param enc_type: str -- используется для кодирования контента,
                          по умолчанию используется кодирование по типу RFC1738,
                          который подразумевает, что пробелы кодируются как символы "плюс"(+),
                          Если enc_type равен 'RFC3986',
