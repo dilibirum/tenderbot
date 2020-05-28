@@ -18,13 +18,13 @@ class BX24(object):
         >>>             uid=0,
         >>>             webhook='yoursecretwebhook')
     """
-
+    # TODO: добавить обработчик ошибок
     def __init__(self, domain: str, uid: int, webhook: str, timeout=60):
         self.url = f"{domain}/{uid}/{webhook}"
         self.timeout = timeout
 
     def callMethod(self, api_method, params=None):
-        """Функция обращается с API Битрикс24
+        """Функция обращается к API Битрикс24
 
         :param api_method: метод API
         :param params: параметры метода
@@ -60,7 +60,7 @@ def http_build_query(query_data,
                          и пробелы будут кодированы как %20.
     :return: возвращает URL-кодированную строку
     """
-
+    # TODO: сделать функцию более универсальной, для любого уровня вложенности словарей
     query = ''
     ENCODE = {'RFC1738': {'left_bracket': '%5B',
                           'right_bracket': '%5D',
