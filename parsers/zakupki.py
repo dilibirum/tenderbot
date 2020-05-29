@@ -1,4 +1,6 @@
 from urllib.parse import quote
+import requests
+from bs4 import BeautifulSoup
 
 
 def search_query(search_string: str,
@@ -44,3 +46,20 @@ def search_query(search_string: str,
             + '&orderPlacement94_1=0' \
             + '&orderPlacement94_2=0'
     return query
+
+
+def get_hrefs(response: requests.models.Response) -> list:
+    """Функция ищет ссылки на закупки на странице поиска
+
+    :param response: requests.models.Response -- ответ сервера
+    :return: список со сслыками
+    """
+    html = response.text
+    soup = BeautifulSoup(html, 'lxml')
+    hrefs = []
+    cards = soup.find_all('div', {'class': 'row no-gutters registry-entry__form mr-0'})
+    for card in cards:
+        hrefs.append(card.find('div', {'class': 'registry-entry__header-mid__number'})
+                         .find('a')
+                         .get('href'))
+    return hrefs
