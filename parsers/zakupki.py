@@ -1,19 +1,20 @@
 from urllib.parse import quote
 
 
-def search_query(search_string='',
+def search_query(search_string: str,
+                 start_date: str,
+                 end_date: str,
                  search_filter='Дате размещения',
                  page_number=1,
-                 start_date='01.01.2012',
-                 end_date='31.12.2012'):
+                 ) -> str:
     """Функция формирует GET-запрос к порталу https://zakupki.gov.ru/
 
-    :param search_string: поисковый запрос
-    :param search_filter: тип сортировки
-    :param page_number: номер страницы
-    :param start_date: дата начала фильтрации закупок
-    :param end_date: дата окончания закупок
-    :return: сформированный запрос
+    :param search_string: str -- поисковый запрос
+    :param start_date: str -- дата начала фильтрации закупок, формат даты 01.01.2012
+    :param end_date: str --дата окончания закупок, формат даты 01.01.2012
+    :param search_filter: str -- тип сортировки, по умолчанию по дате размещения
+    :param page_number: int -- номер страницы, по умолчанию 1 (первая страница)
+    :return: str сформированный запрос
     """
     s_str = '+'.join(list(map(quote, search_string.split())))
     s_flt = '+'.join(list(map(quote, search_filter.split())))
