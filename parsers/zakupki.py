@@ -72,3 +72,32 @@ def get_soup(response: requests.models.Response) -> BeautifulSoup:
     """
     html = response.text
     return BeautifulSoup(html, 'lxml')
+
+
+def create_card() -> dict:
+    """Функция создает карточку закупки
+
+    :return: dict -- словарь с данными карточки
+    """
+    return dict.fromkeys([
+                         'id',              # Реестровый номер извещения
+                         'law',             # Федеральный закон
+                         'type',            # Способ размещения закупки
+                         'description',     # Наименование закупки
+                         'init_date',       # Дата размещения извещения
+                         'platform',        # Наименование электронной площадки
+                         'author_name',     # Наименование организации
+                         'author_inn',      # ИНН
+                         'author_ogrn',     # ОГРН
+                         'address',         # Место нахождения
+                         'author_manager',  # Контактное лицо
+                         'author_email',    # Электронная почта
+                         'author_phone',    # Телефон
+                         'start_date',      # Дата начала срока подачи заявок
+                         'end_date',        # Дата и время окончания подачи заявок(по местному времени заказчика)
+                         'timezone',        # Часовой пояс заказчика
+                         'result_date',     # Дата подведения итогов
+                         'platform_url',    # Место предоставления
+                         'price',           # Начальная (максимальная) цена договора
+                         'url',             # URL-закупки на ЕИС в сфере закупок
+                        ])
