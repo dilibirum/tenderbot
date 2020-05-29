@@ -16,9 +16,9 @@ def create_headers():
     return {"User-Agent": user_agent, "content-type": "text"}
 
 
-def get_html(url: str,
-             timeout=30) -> requests.models.Response:
-    """Функция делает запрос по URL
+def get_request(url: str,
+                timeout=30) -> requests.models.Response:
+    """Функция делает GET-запрос по URL
 
     :param url: str -- URL-адрес
     :param timeout: int -- задержка, по умолчанию 30 сек
