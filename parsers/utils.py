@@ -12,7 +12,6 @@ def create_headers():
 
     :return: словарь, содержащий HEADERS
     """
-
     user_agent = random.choice(USER_AGENTS['browsers'][USER_AGENTS['randomize'][str(random.randint(0, 984))]])
     return {"User-Agent": user_agent, "content-type": "text"}
 

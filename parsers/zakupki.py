@@ -16,7 +16,7 @@ def search_query(search_string: str,
     :param end_date: str --дата окончания закупок, формат даты 01.01.2012
     :param search_filter: str -- тип сортировки, по умолчанию по дате размещения
     :param page_number: int -- номер страницы, по умолчанию 1 (первая страница)
-    :return: str сформированный запрос
+    :return: str -- сформированный запрос
     """
     s_str = '+'.join(list(map(quote, search_string.split())))
     s_flt = '+'.join(list(map(quote, search_filter.split())))
@@ -52,10 +52,9 @@ def get_hrefs(response: requests.models.Response) -> list:
     """Функция ищет ссылки на закупки на странице поиска
 
     :param response: requests.models.Response -- ответ сервера
-    :return: список со сслыками
+    :return: list -- список со сслыками
     """
-    html = response.text
-    soup = BeautifulSoup(html, 'lxml')
+    soup = get_soup(response)
     hrefs = []
     cards = soup.find_all('div', {'class': 'row no-gutters registry-entry__form mr-0'})
     for card in cards:
@@ -63,3 +62,13 @@ def get_hrefs(response: requests.models.Response) -> list:
                          .find('a')
                          .get('href'))
     return hrefs
+
+
+def get_soup(response: requests.models.Response) -> BeautifulSoup:
+    """Функция создает объект BeautifulSoup из ответа сервера
+
+    :param response: requests.models.Response -- ответ сервера
+    :return: BeautifulSoup -- объект BeautifulSoup
+    """
+    html = response.text
+    return BeautifulSoup(html, 'lxml')
