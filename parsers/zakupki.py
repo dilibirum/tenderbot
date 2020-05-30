@@ -387,4 +387,50 @@ def get_card_data(card=None) -> dict:
         msg = f'Failed to make an entry from the purchasing #{hash(card)}'
         logging.error(logger(msg))
 
+    # Пишем данные из раздела документы карточки закупки
+    try:
+        docs_url = make_part_url(card_data['url'])
+        soup = get_soup(get_request(docs_url))
+        msg = f'Card #{hash(card)} starts recording by documets url'
+        logging.info(logger(msg))
+
+        try:
+            card_data['docs'] = get_docs_hrefs(soup)
+        except AttributeError:
+            msg = 'Data for the field "docs" could not be found'
+            logging.error(logger(msg))
+
+    except AttributeError:
+        msg = f'Failed to make an entry from the document link #{hash(card)}'
+        logging.error(logger(msg))
+
     return card_data
+
+
+def make_part_url(common_url, part='documents') -> str:
+    """Функция создает ссылку на другие разделы карточки закупки из общей ссылки,
+       по умолчанию на раздел документы
+
+    :param common_url: str -- общая ссылка на карточку закупки
+    :param part: str -- требуемый раздел карточки закупки, по умолчанию documents
+    :return: str -- ссылка на новвый раздел карточки закупки
+    """
+    i = common_url.index('common-info.')
+    j = common_url.index('.html?')
+    return f"{common_url[:i]}{part}{common_url[j:]}"
+
+
+def get_docs_hrefs(soup: BeautifulSoup) -> str:
+    """Функция возращает ссылки на документы закупки
+
+    :param soup: BeautifulSoup -- объект класса BeautifulSoup
+    :return: str -- ссылки на документы
+    """
+    hr = []
+    hrefs = soup.find('div', {'class': 'addingTbl padTop10 padBtm10 autoTh'}) \
+        .find_all('a', {'class': 'epz_aware'})
+
+    for href in hrefs:
+        hr.append('https://zakupki.gov.ru' + href.get('href'))
+
+    return '\n'.join(hr)
