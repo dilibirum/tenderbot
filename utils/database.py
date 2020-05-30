@@ -1,5 +1,10 @@
 import yaml
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+from datetime import datetime
+import logging
+
+logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
 
 
 class DataBase(object):
@@ -42,4 +47,12 @@ class DataBase(object):
                                                                      config['database'])
             return create_engine(connection_string)
 
-        self.engine = get_engine(get_db_configs(path))
+        try:
+            self.engine = get_engine(get_db_configs(path))
+            msg = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: Connection to PostgreSQL DB {get_db_configs(path)['database']} successful"
+            print(msg)
+            logging.info(msg)
+        except OperationalError as e:
+            msg = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: The error '{e}' occurred"
+            print(msg)
+            logging.error(msg)

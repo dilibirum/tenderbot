@@ -121,7 +121,7 @@ def get_card_data(card=None) -> dict:
     :return: -- словарь со структуированной информацией о закупке
     """
     card_data = create_card()
-    logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Началась запись карточки {hash(card)}')
+    logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Card #{hash(card)} starts recording')
 
     # пишем данные из карточки закупки
     try:
@@ -131,7 +131,7 @@ def get_card_data(card=None) -> dict:
             .split()[1] \
             .strip()
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "id"')
+        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "id" could not be found')
 
     try:
         card_data['law'] = card.find('div', {'class': 'registry-entry__header-top__title text-truncate'}) \
@@ -140,7 +140,7 @@ def get_card_data(card=None) -> dict:
             .split()[0] \
             .strip()
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "law"')
+        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "law" could not be found')
 
     try:
         card_data['url'] = card.find('div', {'class': 'registry-entry__header-mid__number'}) \
@@ -148,7 +148,7 @@ def get_card_data(card=None) -> dict:
             .get('href')
 
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "url"')
+        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "url" could not be found')
 
     try:
         card_data['price'] = card.find('div', {'class': 'price-block__value'}) \
@@ -156,13 +156,13 @@ def get_card_data(card=None) -> dict:
             .replace('\xa0', '') \
             .split()[0]
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "price"')
+        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "price" could not be found')
 
     # пишем данные из по ссылке закупки
     try:
         lot_url = card_data['url']
         soup = get_soup(get_request(lot_url))
-        logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Началась запись по ссылке закупки {hash(card)}')
+        logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Card #{hash(card)} starts recording by url')
 
         # читаем таблицу "Общие сведения о закупке"
         try:
@@ -176,7 +176,7 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "type"')
+            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "type" could not be found')
 
         try:
             card_data['description'] = soup.find('h2', text='Общие сведения о закупке') \
@@ -190,7 +190,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "description"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "description" could not be found')
 
         try:
             card_data['init_date'] = soup.find('h2', text='Общие сведения о закупке') \
@@ -204,7 +204,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "init_date"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "init_date" could not be found')
 
         try:
             card_data['platform'] = soup.find('h2', text='Общие сведения о закупке') \
@@ -216,7 +216,7 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "platform"')
+            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "platform" could not be found')
 
         # читаем таблицу "Заказчик"
         try:
@@ -229,7 +229,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_name"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_name" could not be found')
 
         try:
             card_data['author_inn'] = soup.find('h2', text='Заказчик') \
@@ -241,7 +241,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_inn"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_inn" could not be found')
 
         try:
             card_data['author_ogrn'] = soup.find('h2', text='Заказчик') \
@@ -253,7 +253,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_ogrn"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_ogrn" could not be found')
 
         try:
             card_data['address'] = soup.find('h2', text='Заказчик') \
@@ -264,7 +264,7 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "address"')
+            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "address" could not be found')
 
         # читаем таблицу "Контактная информация"
         try:
@@ -277,7 +277,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_manager"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_manager" could not be found')
 
         try:
             card_data['author_email'] = soup.find('h2', text='Контактная информация') \
@@ -289,7 +289,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_email"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_email" could not be found')
 
         try:
             card_data['author_phone'] = soup.find('h2', text='Контактная информация') \
@@ -301,7 +301,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_phone"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_phone" could not be found')
 
         # читаем таблицу "Порядок проведения процедуры"
         try:
@@ -315,7 +315,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "start_date"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "start_date" could not be found')
 
         try:
             card_data['end_date'] = soup.find('h2', text='Порядок проведения процедуры') \
@@ -327,7 +327,7 @@ def get_card_data(card=None) -> dict:
                 .split()[0] \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "end_date"')
+            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "end_date" could not be found')
 
         try:
             card_data['timezone'] = soup.find('h2', text='Порядок проведения процедуры') \
@@ -341,7 +341,7 @@ def get_card_data(card=None) -> dict:
                 .replace(')', '') \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "timezone"')
+            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "timezone" could not be found')
 
         try:
             card_data['result_date'] = soup.find('h2', text='Порядок проведения процедуры') \
@@ -354,7 +354,7 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "result_date"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "result_date" could not be found')
 
         # читаем таблицу "Предоставление документации"
         try:
@@ -368,10 +368,10 @@ def get_card_data(card=None) -> dict:
                 .strip()
         except AttributeError:
             logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "platform_url"')
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "platform_url" could not be found')
 
     except AttributeError:
         logging.error(
-            f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось сделать запись по ссылке закупки {hash(card)}')
+            f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Failed to make an entry from the purchasing #{hash(card)}')
 
     return card_data
