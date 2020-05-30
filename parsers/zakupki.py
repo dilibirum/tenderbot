@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from parsers.utils import get_request
 import logging
+
 logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
 
 
@@ -63,8 +64,8 @@ def get_hrefs(response: requests.models.Response) -> list:
     cards = soup.find_all('div', {'class': 'row no-gutters registry-entry__form mr-0'})
     for card in cards:
         hrefs.append(card.find('div', {'class': 'registry-entry__header-mid__number'})
-                         .find('a')
-                         .get('href'))
+                     .find('a')
+                     .get('href'))
     return hrefs
 
 
@@ -84,27 +85,32 @@ def create_card() -> dict:
     :return: dict -- словарь с данными карточки
     """
     return dict.fromkeys([
-                         'id',              # Реестровый номер извещения
-                         'law',             # Федеральный закон
-                         'type',            # Способ размещения закупки
-                         'description',     # Наименование закупки
-                         'init_date',       # Дата размещения извещения
-                         'platform',        # Наименование электронной площадки
-                         'author_name',     # Наименование организации
-                         'author_inn',      # ИНН
-                         'author_ogrn',     # ОГРН
-                         'address',         # Место нахождения
-                         'author_manager',  # Контактное лицо
-                         'author_email',    # Электронная почта
-                         'author_phone',    # Телефон
-                         'start_date',      # Дата начала срока подачи заявок
-                         'end_date',        # Дата и время окончания подачи заявок(по местному времени заказчика)
-                         'timezone',        # Часовой пояс заказчика
-                         'result_date',     # Дата подведения итогов
-                         'platform_url',    # Место предоставления
-                         'price',           # Начальная (максимальная) цена договора
-                         'url',             # URL-закупки на ЕИС в сфере закупок
-                        ])
+        'id',                # Реестровый номер извещения
+        'law',               # Федеральный закон
+        'type',              # Способ размещения закупки
+        'description',       # Наименование закупки
+        'init_date',         # Дата размещения извещения
+        'platform',          # Наименование электронной площадки
+        'author_name',       # Наименование организации
+        'author_inn',        # ИНН
+        'author_ogrn',       # ОГРН
+        'address',           # Место нахождения
+        'author_manager',    # Контактное лицо
+        'author_email',      # Электронная почта
+        'author_phone',      # Телефон
+        'start_date',        # Дата начала срока подачи заявок
+        'end_date',          # Дата и время окончания подачи заявок(по местному времени заказчика)
+        'timezone',          # Часовой пояс заказчика
+        'result_date',       # Дата подведения итогов
+        'platform_url',      # Место предоставления
+        'price',             # Начальная (максимальная) цена договора
+        'tender_deposit',    # Обеспечение заявки
+        'contract_deposit',  # Обеспечение контракта
+        'costs',             # Себестоимость контракта
+        'url',               # URL-закупки на ЕИС в сфере закупок
+        'docs',              # URL-ссылка на документацию
+        'comment',           # Комментарий к сделке
+    ])
 
 
 def get_card_data(card=None) -> dict:
@@ -173,186 +179,198 @@ def get_card_data(card=None) -> dict:
 
         try:
             card_data['description'] = soup.find('h2', text='Общие сведения о закупке') \
-                                            .find_next('div') \
-                                            .find('table') \
-                                            .find('tbody') \
-                                            .find_all('tr')[2] \
-                                            .find_all('td')[1] \
-                                            .find('span') \
-                                            .text \
-                                            .strip()
+                .find_next('div') \
+                .find('table') \
+                .find('tbody') \
+                .find_all('tr')[2] \
+                .find_all('td')[1] \
+                .find('span') \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "description"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "description"')
 
         try:
             card_data['init_date'] = soup.find('h2', text='Общие сведения о закупке') \
-                                         .find_next('div') \
-                                         .find('table') \
-                                         .find('tbody') \
-                                         .find_all('tr')[5] \
-                                         .find_all('td')[1] \
-                                         .text \
-                                         .split()[0] \
-                                         .strip()
+                .find_next('div') \
+                .find('table') \
+                .find('tbody') \
+                .find_all('tr')[5] \
+                .find_all('td')[1] \
+                .text \
+                .split()[0] \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "init_date"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "init_date"')
 
         try:
             card_data['platform'] = soup.find('h2', text='Общие сведения о закупке') \
-                                        .find_next('div') \
-                                        .find('table') \
-                                        .find('tbody') \
-                                        .find_all('tr')[7] \
-                                        .find_all('td')[1] \
-                                        .text \
-                                        .strip()
+                .find_next('div') \
+                .find('table') \
+                .find('tbody') \
+                .find_all('tr')[7] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
             logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "platform"')
 
         # читаем таблицу "Заказчик"
         try:
             card_data['author_name'] = soup.find('h2', text='Заказчик') \
-                                           .find_next('div') \
-                                           .find('table') \
-                                           .find_all('tr')[0] \
-                                           .find_all('td')[1] \
-                                           .text \
-                                           .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[0] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_name"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_name"')
 
         try:
             card_data['author_inn'] = soup.find('h2', text='Заказчик') \
-                                          .find_next('div') \
-                                          .find('table') \
-                                          .find_all('tr')[1] \
-                                          .find_all('td')[1] \
-                                          .text \
-                                          .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[1] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_inn"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_inn"')
 
         try:
             card_data['author_ogrn'] = soup.find('h2', text='Заказчик') \
-                                           .find_next('div') \
-                                           .find('table') \
-                                           .find_all('tr')[3] \
-                                           .find_all('td')[1] \
-                                           .text \
-                                           .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[3] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_ogrn"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_ogrn"')
 
         try:
             card_data['address'] = soup.find('h2', text='Заказчик') \
-                                       .find_next('div') \
-                                       .find('table') \
-                                       .find_all('tr')[4] \
-                                       .find_all('td')[1] \
-                                       .text \
-                                       .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[4] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
             logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "address"')
 
         # читаем таблицу "Контактная информация"
         try:
             card_data['author_manager'] = soup.find('h2', text='Контактная информация') \
-                                              .find_next('div') \
-                                              .find('table') \
-                                              .find_all('tr')[1] \
-                                              .find_all('td')[1] \
-                                              .text \
-                                              .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[1] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_manager"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_manager"')
 
         try:
             card_data['author_email'] = soup.find('h2', text='Контактная информация') \
-                                            .find_next('div') \
-                                            .find('table') \
-                                            .find_all('tr')[2] \
-                                            .find_all('td')[1] \
-                                            .text \
-                                            .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[2] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_email"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_email"')
 
         try:
             card_data['author_phone'] = soup.find('h2', text='Контактная информация') \
-                                            .find_next('div') \
-                                            .find('table') \
-                                            .find_all('tr')[3] \
-                                            .find_all('td')[1] \
-                                            .text \
-                                            .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[3] \
+                .find_all('td')[1] \
+                .text \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_phone"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "author_phone"')
 
         # читаем таблицу "Порядок проведения процедуры"
         try:
             card_data['start_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                                          .find_next('div') \
-                                          .find('table') \
-                                          .find_all('tr')[1] \
-                                          .find_all('td')[1] \
-                                          .text \
-                                          .split()[0] \
-                                          .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[1] \
+                .find_all('td')[1] \
+                .text \
+                .split()[0] \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "start_date"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "start_date"')
 
         try:
             card_data['end_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                                        .find_next('div') \
-                                        .find('table') \
-                                        .find_all('tr')[2] \
-                                        .find_all('td')[1] \
-                                        .text \
-                                        .split()[0] \
-                                        .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[2] \
+                .find_all('td')[1] \
+                .text \
+                .split()[0] \
+                .strip()
         except AttributeError:
             logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "end_date"')
 
         try:
             card_data['timezone'] = soup.find('h2', text='Порядок проведения процедуры') \
-                                        .find_next('div') \
-                                        .find('table') \
-                                        .find_all('tr')[1] \
-                                        .find_all('td')[1] \
-                                        .text \
-                                        .split()[1] \
-                                        .replace('(', '') \
-                                        .replace(')', '') \
-                                        .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[1] \
+                .find_all('td')[1] \
+                .text \
+                .split()[1] \
+                .replace('(', '') \
+                .replace(')', '') \
+                .strip()
         except AttributeError:
             logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "timezone"')
 
         try:
             card_data['result_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                                           .find_next('div') \
-                                           .find('table') \
-                                           .find_all('tr')[6] \
-                                           .find_all('td')[1] \
-                                           .text \
-                                           .split()[0] \
-                                           .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[6] \
+                .find_all('td')[1] \
+                .text \
+                .split()[0] \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "result_date"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "result_date"')
 
         # читаем таблицу "Предоставление документации"
         try:
             card_data['platform_url'] = soup.find('h2', text='Предоставление документации') \
-                                            .find_next('div') \
-                                            .find('table') \
-                                            .find_all('tr')[1] \
-                                            .find_all('td')[1] \
-                                            .text \
-                                            .split()[0] \
-                                            .strip()
+                .find_next('div') \
+                .find('table') \
+                .find_all('tr')[1] \
+                .find_all('td')[1] \
+                .text \
+                .split()[0] \
+                .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "platform_url"')
+            logging.error(
+                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось найти данные для поля "platform_url"')
 
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось сделать запись по ссылке закупки {hash(card)}')
+        logging.error(
+            f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Не удалось сделать запись по ссылке закупки {hash(card)}')
 
     return card_data

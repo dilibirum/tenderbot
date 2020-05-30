@@ -1,4 +1,4 @@
-import urllib
+from urllib.parse import quote
 import requests
 
 
@@ -78,14 +78,14 @@ def http_build_query(query_data,
 
         for key, value in qd.items():
             if not isinstance(value, (dict, list)):
-                q += f"{key}={ENCODE[et]['space'].join(map(lambda s: urllib.parse.quote(s).replace('/', '%2F'), str(value).split()))}"
+                q += f"{key}={ENCODE[et]['space'].join(map(lambda s: quote(s).replace('/', '%2F'), str(value).split()))}"
             elif isinstance(value, dict):
 
                 c = 0
                 for k, v in value.items():
                     if not isinstance(v, (dict, list)):
                         q += f"{key}{ENCODE[et]['left_bracket']}{k}{ENCODE[et]['right_bracket']}=" + \
-                             f"{ENCODE[et]['space'].join(map(lambda s: urllib.parse.quote(s).replace('/', '%2F'), str(v).split()))}"
+                             f"{ENCODE[et]['space'].join(map(lambda s: quote(s).replace('/', '%2F'), str(v).split()))}"
 
                     elif isinstance(v, list):
                         q += build_query_from_list(qd=v)
@@ -96,7 +96,7 @@ def http_build_query(query_data,
                         for _k, _v in v.items():
                             q += f"{key}{ENCODE[et]['left_bracket']}{k}{ENCODE[et]['right_bracket']}" + \
                                  f"{ENCODE[et]['left_bracket']}{_k}{ENCODE[et]['right_bracket']}=" + \
-                                 f"{ENCODE[et]['space'].join(map(lambda s: urllib.parse.quote(s).replace('/', '%2F'), str(_v).split()))}"
+                                 f"{ENCODE[et]['space'].join(map(lambda s: quote(s).replace('/', '%2F'), str(_v).split()))}"
                             _c += 1
 
                             if _c < len(v):
@@ -117,7 +117,7 @@ def http_build_query(query_data,
 
                     if not isinstance(v, (dict, list)):
                         q += f"{key}{ENCODE[et]['left_bracket']}{pr}{ENCODE[et]['right_bracket']}=" + \
-                             f"{ENCODE[et]['space'].join(map(lambda s: urllib.parse.quote(s).replace('/', '%2F'), str(v).split()))}"
+                             f"{ENCODE[et]['space'].join(map(lambda s: quote(s).replace('/', '%2F'), str(v).split()))}"
 
                     elif isinstance(v, list):
                         q += build_query_from_list(qd=v)
@@ -146,7 +146,7 @@ def http_build_query(query_data,
                 pref = f"{np}{i}"
 
             if not isinstance(value, (dict, list)):
-                q += f"{pref}={ENCODE[et]['space'].join(map(lambda s: urllib.parse.quote(s).replace('/', '%2F'), str(value).split()))}"
+                q += f"{pref}={ENCODE[et]['space'].join(map(lambda s: quote(s).replace('/', '%2F'), str(value).split()))}"
             elif isinstance(value, dict):
                 q += build_query_from_dict(qd=value)
             elif isinstance(value, list):
