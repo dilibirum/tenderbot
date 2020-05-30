@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from parsers.utils import get_request
+from utils.converter import to_numeric, date_formatter
+from utils.collecting import logger
 import logging
 
 logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
@@ -85,32 +87,32 @@ def create_card() -> dict:
     :return: dict -- словарь с данными карточки
     """
     return dict.fromkeys([
-        'id',                # Реестровый номер извещения
-        'law',               # Федеральный закон
-        'type',              # Способ размещения закупки
-        'description',       # Наименование закупки
-        'init_date',         # Дата размещения извещения
-        'platform',          # Наименование электронной площадки
-        'author_name',       # Наименование организации
-        'author_inn',        # ИНН
-        'author_ogrn',       # ОГРН
-        'address',           # Место нахождения
-        'author_manager',    # Контактное лицо
-        'author_email',      # Электронная почта
-        'author_phone',      # Телефон
-        'start_date',        # Дата начала срока подачи заявок
-        'end_date',          # Дата и время окончания подачи заявок(по местному времени заказчика)
-        'timezone',          # Часовой пояс заказчика
-        'result_date',       # Дата подведения итогов
-        'platform_url',      # Место предоставления
-        'price',             # Начальная (максимальная) цена договора
-        'tender_deposit',    # Обеспечение заявки
+        'id',  # Реестровый номер извещения
+        'law',  # Федеральный закон
+        'type',  # Способ размещения закупки
+        'description',  # Наименование закупки
+        'init_date',  # Дата размещения извещения
+        'platform',  # Наименование электронной площадки
+        'author_name',  # Наименование организации
+        'author_inn',  # ИНН
+        'author_ogrn',  # ОГРН
+        'address',  # Место нахождения
+        'author_manager',  # Контактное лицо
+        'author_email',  # Электронная почта
+        'author_phone',  # Телефон
+        'start_date',  # Дата начала срока подачи заявок
+        'end_date',  # Дата и время окончания подачи заявок(по местному времени заказчика)
+        'timezone',  # Часовой пояс заказчика
+        'result_date',  # Дата подведения итогов
+        'platform_url',  # Место предоставления
+        'price',  # Начальная (максимальная) цена договора
+        'tender_deposit',  # Обеспечение заявки
         'contract_deposit',  # Обеспечение контракта
-        'costs',             # Себестоимость контракта
-        'url',               # URL-закупки на ЕИС в сфере закупок
-        'docs',              # URL-ссылка на документацию
-        'comment',           # Комментарий к сделке
-        'date',              # Дата записи карточки
+        'costs',  # Себестоимость контракта
+        'url',  # URL-закупки на ЕИС в сфере закупок
+        'docs',  # URL-ссылка на документацию
+        'comment',  # Комментарий к сделке
+        'date',  # Дата записи карточки
     ])
 
 
@@ -121,17 +123,19 @@ def get_card_data(card=None) -> dict:
     :return: -- словарь со структуированной информацией о закупке
     """
     card_data = create_card()
-    logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Card #{hash(card)} starts recording')
+    msg = f'Card #{hash(card)} starts recording'
+    logging.info(logger(msg))
 
     # пишем данные из карточки закупки
     try:
-        card_data['id'] = card.find('div', {'class': 'registry-entry__header-mid__number'}) \
-            .text \
-            .strip() \
-            .split()[1] \
-            .strip()
+        card_data['id'] = int(card.find('div', {'class': 'registry-entry__header-mid__number'})
+                              .text
+                              .strip()
+                              .split()[1]
+                              .strip())
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "id" could not be found')
+        msg = 'Data for the field "id" could not be found'
+        logging.error(logger(msg))
 
     try:
         card_data['law'] = card.find('div', {'class': 'registry-entry__header-top__title text-truncate'}) \
@@ -140,7 +144,8 @@ def get_card_data(card=None) -> dict:
             .split()[0] \
             .strip()
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "law" could not be found')
+        msg = 'Data for the field "law" could not be found'
+        logging.error(logger(msg))
 
     try:
         card_data['url'] = card.find('div', {'class': 'registry-entry__header-mid__number'}) \
@@ -148,21 +153,24 @@ def get_card_data(card=None) -> dict:
             .get('href')
 
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "url" could not be found')
+        msg = 'Data for the field "url" could not be found'
+        logging.error(logger(msg))
 
     try:
-        card_data['price'] = card.find('div', {'class': 'price-block__value'}) \
-            .text \
-            .replace('\xa0', '') \
-            .split()[0]
+        card_data['price'] = to_numeric(card.find('div', {'class': 'price-block__value'})
+                                        .text
+                                        .replace('\xa0', '')
+                                        .split()[0])
     except AttributeError:
-        logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "price" could not be found')
+        msg = 'Data for the field "price" could not be found'
+        logging.error(logger(msg))
 
     # пишем данные из по ссылке закупки
     try:
         lot_url = card_data['url']
         soup = get_soup(get_request(lot_url))
-        logging.info(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Card #{hash(card)} starts recording by url')
+        msg = f'Card #{hash(card)} starts recording by url'
+        logging.info(logger(msg))
 
         # читаем таблицу "Общие сведения о закупке"
         try:
@@ -176,7 +184,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "type" could not be found')
+            msg = 'Data for the field "type" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['description'] = soup.find('h2', text='Общие сведения о закупке') \
@@ -189,22 +198,22 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "description" could not be found')
+            msg = 'Data for the field "description" could not be found'
+            logging.error(logger(msg))
 
         try:
-            card_data['init_date'] = soup.find('h2', text='Общие сведения о закупке') \
-                .find_next('div') \
-                .find('table') \
-                .find('tbody') \
-                .find_all('tr')[5] \
-                .find_all('td')[1] \
-                .text \
-                .split()[0] \
-                .strip()
+            card_data['init_date'] = date_formatter(soup.find('h2', text='Общие сведения о закупке')
+                                                    .find_next('div')
+                                                    .find('table')
+                                                    .find('tbody')
+                                                    .find_all('tr')[5]
+                                                    .find_all('td')[1]
+                                                    .text
+                                                    .split()[0]
+                                                    .strip())
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "init_date" could not be found')
+            msg = 'Data for the field "init_date" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['platform'] = soup.find('h2', text='Общие сведения о закупке') \
@@ -216,7 +225,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "platform" could not be found')
+            msg = 'Data for the field "platform" could not be found'
+            logging.error(logger(msg))
 
         # читаем таблицу "Заказчик"
         try:
@@ -228,8 +238,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_name" could not be found')
+            msg = 'Data for the field "author_name" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['author_inn'] = soup.find('h2', text='Заказчик') \
@@ -240,8 +250,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_inn" could not be found')
+            msg = 'Data for the field "inn" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['author_ogrn'] = soup.find('h2', text='Заказчик') \
@@ -252,8 +262,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_ogrn" could not be found')
+            msg = 'Data for the field "author_ogrn" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['address'] = soup.find('h2', text='Заказчик') \
@@ -264,7 +274,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "address" could not be found')
+            msg = 'Data for the field "address" could not be found'
+            logging.error(logger(msg))
 
         # читаем таблицу "Контактная информация"
         try:
@@ -276,8 +287,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_manager" could not be found')
+            msg = 'Data for the field "author_manager" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['author_email'] = soup.find('h2', text='Контактная информация') \
@@ -288,8 +299,8 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_email" could not be found')
+            msg = 'Data for the field "author_email" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['author_phone'] = soup.find('h2', text='Контактная информация') \
@@ -300,34 +311,35 @@ def get_card_data(card=None) -> dict:
                 .text \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "author_phone" could not be found')
+            msg = 'Data for the field "author_phone" could not be found'
+            logging.error(logger(msg))
 
         # читаем таблицу "Порядок проведения процедуры"
         try:
-            card_data['start_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                .find_next('div') \
-                .find('table') \
-                .find_all('tr')[1] \
-                .find_all('td')[1] \
-                .text \
-                .split()[0] \
-                .strip()
+            card_data['start_date'] = date_formatter(soup.find('h2', text='Порядок проведения процедуры')
+                                                     .find_next('div')
+                                                     .find('table')
+                                                     .find_all('tr')[1]
+                                                     .find_all('td')[1]
+                                                     .text
+                                                     .split()[0]
+                                                     .strip())
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "start_date" could not be found')
+            msg = 'Data for the field "start_date" could not be found'
+            logging.error(logger(msg))
 
         try:
-            card_data['end_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                .find_next('div') \
-                .find('table') \
-                .find_all('tr')[2] \
-                .find_all('td')[1] \
-                .text \
-                .split()[0] \
-                .strip()
+            card_data['end_date'] = date_formatter(soup.find('h2', text='Порядок проведения процедуры')
+                                                   .find_next('div')
+                                                   .find('table')
+                                                   .find_all('tr')[2]
+                                                   .find_all('td')[1]
+                                                   .text
+                                                   .split()[0]
+                                                   .strip())
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "end_date" could not be found')
+            msg = 'Data for the field "end_date" could not be found'
+            logging.error(logger(msg))
 
         try:
             card_data['timezone'] = soup.find('h2', text='Порядок проведения процедуры') \
@@ -341,20 +353,21 @@ def get_card_data(card=None) -> dict:
                 .replace(')', '') \
                 .strip()
         except AttributeError:
-            logging.error(f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "timezone" could not be found')
+            msg = 'Data for the field "timezone" could not be found'
+            logging.error(logger(msg))
 
         try:
-            card_data['result_date'] = soup.find('h2', text='Порядок проведения процедуры') \
-                .find_next('div') \
-                .find('table') \
-                .find_all('tr')[6] \
-                .find_all('td')[1] \
-                .text \
-                .split()[0] \
-                .strip()
+            card_data['result_date'] = date_formatter(soup.find('h2', text='Порядок проведения процедуры')
+                                                      .find_next('div')
+                                                      .find('table')
+                                                      .find_all('tr')[6]
+                                                      .find_all('td')[1]
+                                                      .text
+                                                      .split()[0]
+                                                      .strip())
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "result_date" could not be found')
+            msg = 'Data for the field "result_date" could not be found'
+            logging.error(logger(msg))
 
         # читаем таблицу "Предоставление документации"
         try:
@@ -367,11 +380,11 @@ def get_card_data(card=None) -> dict:
                 .split()[0] \
                 .strip()
         except AttributeError:
-            logging.error(
-                f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Data for the field "platform_url" could not be found')
+            msg = 'Data for the field "platform_url" could not be found'
+            logging.error(logger(msg))
 
     except AttributeError:
-        logging.error(
-            f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} Failed to make an entry from the purchasing #{hash(card)}')
+        msg = f'Failed to make an entry from the purchasing #{hash(card)}'
+        logging.error(logger(msg))
 
     return card_data
