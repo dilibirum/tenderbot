@@ -2,3 +2,21 @@ INFO:root:2020-05-30 13:45:11 Card #-2831125609353914615 starts recording
 INFO:root:2020-05-30 13:45:11 Card #-2831125609353914615 starts recording by url
 INFO:root:2020-05-30 13:45:11 Card #-8554729488221336144 starts recording
 INFO:root:2020-05-30 13:45:11 Card #-8554729488221336144 starts recording by url
+INFO:root:2020-05-30 14:20:23 Card #-2831125609353914615 starts recording
+INFO:root:2020-05-30 14:20:23 Card #-2831125609353914615 starts recording by url
+INFO:root:2020-05-30 14:20:23 Card #-8554729488221336144 starts recording
+INFO:root:2020-05-30 14:20:23 Card #-8554729488221336144 starts recording by url
+INFO:root:2020-05-30 14:20:56: Card #7298952739194987942 starts recording
+INFO:root:2020-05-30 14:20:56: Card #7298952739194987942 starts recording by url
+INFO:root:2020-05-30 14:20:56: Card #7298952739194987942 starts recording by documets url
+INFO:root:2020-05-30 14:20:56: Card #-611782564487332665 starts recording
+INFO:root:2020-05-30 14:20:56: Card #-611782564487332665 starts recording by url
+ERROR:root:2020-05-30 14:20:56 Cannot format 18 to %Y-%m-%d. time data '18' does not match format '%d.%m.%Y'
+INFO:root:2020-05-30 14:20:56: Card #-611782564487332665 starts recording by documets url
+INFO:root:2020-05-30 14:22:00: Card #2733983837441537831 starts recording
+INFO:root:2020-05-30 14:22:00: Card #2733983837441537831 starts recording by url
+INFO:root:2020-05-30 14:22:00: Card #2733983837441537831 starts recording by documets url
+INFO:root:2020-05-30 14:22:00: Card #-889069649675339452 starts recording
+INFO:root:2020-05-30 14:22:00: Card #-889069649675339452 starts recording by url
+ERROR:root:2020-05-30 14:22:00 Cannot format 18 to %Y-%m-%d. time data '18' does not match format '%d.%m.%Y'
+INFO:root:2020-05-30 14:22:01: Card #-889069649675339452 starts recording by documets url

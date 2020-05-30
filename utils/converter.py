@@ -22,7 +22,7 @@ def to_numeric(string) -> float:
     return result_int
 
 
-def date_formatter(date: str, formatter='%Y-%m-$d'):
+def date_formatter(date: str, formatter='%Y-%m-%d'):
     """Функция преобразует формат даты День.Месяц.Год в Год-Месяц-День
 
     :param date: str -- исходная дата в форме строки
