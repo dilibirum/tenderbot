@@ -718,6 +718,43 @@ def get_result_date(soup: BeautifulSoup, comment: Commentator) -> str:
     return result
 
 
+def get_comment(soup: BeautifulSoup, comment: Commentator) -> str:
+    """Функция находит преимущества, требования к участникам
+
+    :param comment: -- объект Commentator
+    :param soup: -- объект BeautifulSoup
+    :return: Преимущества, требования к участникам
+    """
+    result = ''
+    try:
+        result += '\nПреимущества:\n\n'
+        result += soup.find('span', {'class': 'section__title'}, text='Преимущества') \
+                      .find_next('span', {'class': 'section__info'}) \
+                      .text \
+                      .strip() + '\n'
+        result += '\nТребования к участникам:\n\n'
+        result += soup.find('span', {'class': 'section__title'}, text='Требования к участникам') \
+            .find_next('span', {'class': 'section__info'}) \
+            .text \
+            .strip() \
+            .replace('\n', '') \
+            .replace('\t', '') \
+            .replace('\xa0', ' ') + '\n'
+        result += '\nОграничения и запреты:\n\n'
+        result += soup.find('span', {'class': 'section__title'}, text='Ограничения и запреты') \
+            .find_next('span', {'class': 'section__info'}) \
+            .text \
+            .strip() \
+            .replace('\n', '') \
+            .replace('\t', '') \
+            .replace('\xa0', ' ') + '\n'
+    except AttributeError:
+        msg = 'Data for the field "timezone" could not be found'
+        logging.error(logger(msg))
+        comment.write('\t• требования и ограничения к участникам;')
+    return result
+
+
 # TODO: 30 мая 2020 года изменилась структура сайта!!!
 def get_card_data(card=None) -> dict:
     """Функция парсит информацию о закупке и записывает с структурированный словарь
@@ -766,6 +803,7 @@ def get_card_data(card=None) -> dict:
             soup, comment)  # 'end_date', Дата и время окончания подачи заявок(по местному времени заказчика)
         card_data['timezone'] = get_timezone(soup, comment)  # 'timezone', Часовой пояс заказчика
         card_data['result_date'] = get_result_date(soup, comment)  # 'result_date', Дата подведения итогов
+        comment.write(get_comment(soup, comment))  # 'comment',  # Комментарий к сделке
     except AttributeError:
         msg = f'Failed to make an entry from the purchasing #{hash(card)}'
         logging.error(logger(msg))
