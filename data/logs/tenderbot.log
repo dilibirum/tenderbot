@@ -38,3 +38,37 @@ INFO:root:2020-05-31 13:04:37: Card #7124702407214837123 starts recording
 INFO:root:2020-05-31 13:09:53: Card #9090493873485966057 starts recording
 INFO:root:2020-05-31 13:09:53: Card #-199093611255249473 starts recording
 INFO:root:2020-05-31 13:09:53: Card #-4620482375160119586 starts recording
+INFO:root:2020-05-31 14:03:29: Card #-8828755319863792798 starts recording
+INFO:root:2020-05-31 14:03:29: Card #-4295564945381257529 starts recording
+INFO:root:2020-05-31 14:03:29: Card #2497782015346181061 starts recording
+INFO:root:2020-05-31 14:10:27: Card #-6482314498968477346 starts recording
+INFO:root:2020-05-31 14:10:27: Card #5064545073628355272 starts recording
+INFO:root:2020-05-31 14:10:27: Card #3804724288217436697 starts recording
+INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording
+INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording by url
+ERROR:root:2020-05-31 14:19:43: Data for the field "platform_url" could not be found
+INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording by documets url
+INFO:root:2020-05-31 14:19:43: Card #-8100810864124746317 starts recording
+INFO:root:2020-05-31 14:19:43: Card #-8100810864124746317 starts recording by url
+INFO:root:2020-05-31 14:19:44: Card #-8100810864124746317 starts recording by documets url
+INFO:root:2020-05-31 14:19:44: Card #3299599308134990262 starts recording
+INFO:root:2020-05-31 14:19:45: Card #3299599308134990262 starts recording by url
+ERROR:root:2020-05-31 14:19:45: Data for the field "type" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "description" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "init_date" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "platform" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "platform_url" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "platform_url" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "author_name" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "inn" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "author_ogrn" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "address" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "author_manager" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "author_email" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "author_phone" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "start_date" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "end_date" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "timezone" could not be found
+ERROR:root:2020-05-31 14:19:45: Data for the field "result_date" could not be found
+INFO:root:2020-05-31 14:19:45: Card #3299599308134990262 starts recording by documets url
+ERROR:root:2020-05-31 14:19:45: Data for the field "docs" could not be found
