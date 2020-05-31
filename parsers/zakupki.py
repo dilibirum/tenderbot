@@ -5,7 +5,7 @@ import numpy as np
 import time
 from parsers.utils import get_request
 from utils.converter import to_numeric, date_formatter, datetime_formatter
-from utils.collecting import logger
+from utils.collecting import logger, Commentator
 import logging
 
 logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
@@ -115,9 +115,10 @@ def create_card() -> dict:
     ])
 
 
-def get_id(soup: BeautifulSoup) -> int:
+def get_id(soup: BeautifulSoup, comment: Commentator) -> int:
     """Функция находит реестровый номер извещения
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: реестровый номер извещения
     """
@@ -131,12 +132,14 @@ def get_id(soup: BeautifulSoup) -> int:
     except AttributeError:
         msg = 'Data for the field "id" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• реестровый номер извещения;')
     return result
 
 
-def get_law(soup: BeautifulSoup) -> str:
+def get_law(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит федеральный закон
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: федеральный закон
     """
@@ -150,12 +153,14 @@ def get_law(soup: BeautifulSoup) -> str:
     except AttributeError:
         msg = 'Data for the field "law" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• номер федерального закона;')
     return result
 
 
-def get_url(soup: BeautifulSoup) -> str:
+def get_url(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит URL-закупки на ЕИС в сфере закупок
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: URL-закупки на ЕИС в сфере закупок
     """
@@ -170,12 +175,14 @@ def get_url(soup: BeautifulSoup) -> str:
     except AttributeError:
         msg = 'Data for the field "url" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• URL-закупки на ЕИС в сфере закупок;')
     return result
 
 
-def get_price(soup: BeautifulSoup) -> float:
+def get_price(soup: BeautifulSoup, comment: Commentator) -> float:
     """Функция находит начальную (максимальную) цену договора
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: начальная (максимальная) цена договора
     """
@@ -188,12 +195,14 @@ def get_price(soup: BeautifulSoup) -> float:
     except AttributeError:
         msg = 'Data for the field "price" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• начальную (максимальную) цену договора;')
     return result
 
 
-def get_type(soup: BeautifulSoup) -> str:
+def get_type(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит способ размещения закупки
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Способ размещения закупки
     """
@@ -213,12 +222,14 @@ def get_type(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "type" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• способ размещения закупки;')
     return result
 
 
-def get_description(soup: BeautifulSoup) -> str:
+def get_description(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит наименование закупки
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Наименование закупки
     """
@@ -237,12 +248,14 @@ def get_description(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "description" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• наименование/объект закупки;')
     return result
 
 
-def get_init_date(soup: BeautifulSoup) -> str:
+def get_init_date(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит дату размещения извещения
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Дата размещения извещения
 
@@ -264,12 +277,14 @@ def get_init_date(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "init_date" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• дату размещения извещения о закупке;')
     return result
 
 
-def get_platform(soup: BeautifulSoup) -> str:
+def get_platform(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит наименование электронной площадки
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Наименование электронной площадки
     """
@@ -291,12 +306,14 @@ def get_platform(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "platform" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• наименование электронной площадки;')
     return result
 
 
-def get_platform_url(soup: BeautifulSoup) -> str:
+def get_platform_url(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит адрес электронной площадки
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Адрес электронной площадки
 
@@ -320,12 +337,14 @@ def get_platform_url(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "platform_url" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• адрес электронной площадки;')
     return result
 
 
-def get_tender_deposit(soup: BeautifulSoup):
+def get_tender_deposit(soup: BeautifulSoup, comment: Commentator):
     """Функция находит обеспечение заявки
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Обеспечение заявки
     """
@@ -355,12 +374,14 @@ def get_tender_deposit(soup: BeautifulSoup):
         except AttributeError:
             msg = 'Data for the field "tender_deposit" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• обеспечение заявки;')
     return result
 
 
-def get_contract_deposit(soup: BeautifulSoup, price: float) -> float:
+def get_contract_deposit(soup: BeautifulSoup, price: float, comment: Commentator) -> float:
     """Функция находит обеспечение контракта
 
+    :param comment: -- объект Commentator
     :param price: -- цена котракта
     :param soup: -- объект BeautifulSoup
     :return: Обеспечение контракта
@@ -380,12 +401,14 @@ def get_contract_deposit(soup: BeautifulSoup, price: float) -> float:
     except AttributeError:
         msg = 'Data for the field "contract_deposit" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• обеспечение контракта;')
     return result
 
 
-def get_warranty_deposit(soup: BeautifulSoup, price: float) -> float:
+def get_warranty_deposit(soup: BeautifulSoup, price: float, comment: Commentator) -> float:
     """Функция находит обеспечение гарантийных обязательств
 
+    :param comment: -- объект Commentator
     :param price: -- цена котракта
     :param soup: -- объект BeautifulSoup
     :return: Обеспечение гарантийных обязательств
@@ -404,12 +427,14 @@ def get_warranty_deposit(soup: BeautifulSoup, price: float) -> float:
     except AttributeError:
         msg = 'Data for the field "warranty_deposit" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• обеспечение гарантийных обязательств;')
     return result
 
 
-def get_author_name(soup: BeautifulSoup) -> str:
+def get_author_name(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит наименование организации
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Наименование организации
     """
@@ -429,12 +454,14 @@ def get_author_name(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "author_name" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• наименование организации;')
     return result
 
 
-def get_author_inn(soup: BeautifulSoup) -> str:
+def get_author_inn(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит ИНН
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: ИНН
     """
@@ -447,12 +474,14 @@ def get_author_inn(soup: BeautifulSoup) -> str:
     except AttributeError:
         msg = 'Data for the field "inn" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• ИНН организации;')
     return result
 
 
-def get_author_ogrn(soup: BeautifulSoup) -> str:
+def get_author_ogrn(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит ОГРН
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: ОГРН
     """
@@ -465,12 +494,14 @@ def get_author_ogrn(soup: BeautifulSoup) -> str:
     except AttributeError:
         msg = 'Data for the field "author_ogrn" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• ОГРН организации;')
     return result
 
 
-def get_address(soup: BeautifulSoup) -> str:
-    """Функция находит место нахождения
+def get_address(soup: BeautifulSoup, comment: Commentator) -> str:
+    """Функция находит адрес место нахождения
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Место нахождения
     """
@@ -490,12 +521,14 @@ def get_address(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "address" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• адрес место нахождения организации;')
     return result
 
 
-def get_author_manager(soup: BeautifulSoup) -> str:
+def get_author_manager(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит контактное лицо
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Контактное лицо
     """
@@ -515,12 +548,14 @@ def get_author_manager(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "author_manager" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• ФИО контактного лица организации;')
     return result
 
 
-def get_author_email(soup: BeautifulSoup) -> str:
+def get_author_email(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит электронную почту
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Электронная почта
     """
@@ -540,12 +575,14 @@ def get_author_email(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "author_email" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• электронную почту организации;')
     return result
 
 
-def get_author_phone(soup: BeautifulSoup) -> str:
+def get_author_phone(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит телефон
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Телефон
     """
@@ -565,12 +602,14 @@ def get_author_phone(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "author_phone" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• телефон организации;')
     return result
 
 
-def get_start_date(soup: BeautifulSoup) -> str:
+def get_start_date(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит дату начала срока подачи заявок
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Дата начала срока подачи заявок
     """
@@ -592,12 +631,14 @@ def get_start_date(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "start_date" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• дату начала срока подачи заявок;')
     return result
 
 
-def get_end_date(soup: BeautifulSoup) -> str:
+def get_end_date(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит дату и время окончания подачи заявок(по местному времени заказчика)
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Дата и время окончания подачи заявок(по местному времени заказчика)
     """
@@ -619,12 +660,14 @@ def get_end_date(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "end_date" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• дату и время окончания подачи заявок;')
     return result
 
 
-def get_timezone(soup: BeautifulSoup) -> str:
+def get_timezone(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит часовой пояс заказчика
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Часовой пояс заказчика
     """
@@ -640,12 +683,14 @@ def get_timezone(soup: BeautifulSoup) -> str:
     except AttributeError:
         msg = 'Data for the field "timezone" could not be found'
         logging.error(logger(msg))
+        comment.write('\t• часовой пояс заказчика;')
     return result
 
 
-def get_result_date(soup: BeautifulSoup) -> str:
+def get_result_date(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит дату подведения итогов
 
+    :param comment: -- объект Commentator
     :param soup: -- объект BeautifulSoup
     :return: Дата подведения итогов
     """
@@ -669,6 +714,7 @@ def get_result_date(soup: BeautifulSoup) -> str:
         except AttributeError:
             msg = 'Data for the field "result_date" could not be found'
             logging.error(logger(msg))
+            comment.write('\t• дату подведения итогов;')
     return result
 
 
@@ -679,16 +725,17 @@ def get_card_data(card=None) -> dict:
     :param card: -- объект BeautifulSoup
     :return: -- словарь со структуированной информацией о закупке
     """
+    comment = Commentator()
     card_data = create_card()
     msg = f'Card #{hash(card)} starts recording'
     logging.info(logger(msg))
     card_data['time'] = time.time()
 
     # пишем данные из карточки закупки
-    card_data['id'] = get_id(card)  # 'id', Реестровый номер извещения
-    card_data['law'] = get_law(card)  # 'law', Федеральный закон
-    card_data['url'] = get_url(card)  # 'url', URL-закупки на ЕИС в сфере закупок
-    card_data['price'] = get_price(card)  # 'price', Начальная (максимальная) цена договора
+    card_data['id'] = get_id(card, comment)  # 'id', Реестровый номер извещения
+    card_data['law'] = get_law(card, comment)  # 'law', Федеральный закон
+    card_data['url'] = get_url(card, comment)  # 'url', URL-закупки на ЕИС в сфере закупок
+    card_data['price'] = get_price(card, comment)  # 'price', Начальная (максимальная) цена договора
 
     # пишем данные из по ссылке закупки, для 44-ФЗ и 223-ФЗ представление страницы с данными различается
     try:
@@ -697,28 +744,28 @@ def get_card_data(card=None) -> dict:
         msg = f'Card #{hash(card)} starts recording by url'
         logging.info(logger(msg))
 
-        card_data['type'] = get_type(soup)  # 'type', Способ размещения закупки
-        card_data['description'] = get_description(soup)  # 'description', Наименование закупки
-        card_data['init_date'] = get_init_date(soup)  # 'init_date', Дата размещения извещения
-        card_data['platform'] = get_platform(soup)  # 'platform', Наименование электронной площадки
-        card_data['platform_url'] = get_platform_url(soup)  # 'platform_url', Адрес электронной площадки
-        card_data['tender_deposit'] = get_tender_deposit(soup)  # 'tender_deposit', Обеспечение заявки
+        card_data['type'] = get_type(soup, comment)  # 'type', Способ размещения закупки
+        card_data['description'] = get_description(soup, comment)  # 'description', Наименование закупки
+        card_data['init_date'] = get_init_date(soup, comment)  # 'init_date', Дата размещения извещения
+        card_data['platform'] = get_platform(soup, comment)  # 'platform', Наименование электронной площадки
+        card_data['platform_url'] = get_platform_url(soup, comment)  # 'platform_url', Адрес электронной площадки
+        card_data['tender_deposit'] = get_tender_deposit(soup, comment)  # 'tender_deposit', Обеспечение заявки
         card_data['contract_deposit'] = get_contract_deposit(soup, card_data[
-            'price'])  # 'contract_deposit', Обеспечение контракта
+            'price'], comment)  # 'contract_deposit', Обеспечение контракта
         card_data['warranty_deposit'] = get_warranty_deposit(soup, card_data[
-            'price'])  # 'warranty_deposit', Обеспечение гарантийных обязательств
-        card_data['author_name'] = get_author_name(soup)  # 'author_name', Наименование организации
-        card_data['author_inn'] = get_author_inn(soup)  # 'author_inn', ИНН
-        card_data['author_ogrn'] = get_author_ogrn(soup)  # 'author_ogrn', ОГРН
-        card_data['address'] = get_address(soup)  # 'address', Место нахождения
-        card_data['author_manager'] = get_author_manager(soup)  # 'author_manager', Контактное лицо
-        card_data['author_email'] = get_author_email(soup)  # 'author_email', Электронная почта
-        card_data['author_phone'] = get_author_phone(soup)  # 'author_phone', Телефон
-        card_data['start_date'] = get_start_date(soup)  # 'start_date', Дата начала срока подачи заявок
+            'price'], comment)  # 'warranty_deposit', Обеспечение гарантийных обязательств
+        card_data['author_name'] = get_author_name(soup, comment)  # 'author_name', Наименование организации
+        card_data['author_inn'] = get_author_inn(soup, comment)  # 'author_inn', ИНН
+        card_data['author_ogrn'] = get_author_ogrn(soup, comment)  # 'author_ogrn', ОГРН
+        card_data['address'] = get_address(soup, comment)  # 'address', Место нахождения
+        card_data['author_manager'] = get_author_manager(soup, comment)  # 'author_manager', Контактное лицо
+        card_data['author_email'] = get_author_email(soup, comment)  # 'author_email', Электронная почта
+        card_data['author_phone'] = get_author_phone(soup, comment)  # 'author_phone', Телефон
+        card_data['start_date'] = get_start_date(soup, comment)  # 'start_date', Дата начала срока подачи заявок
         card_data['end_date'] = get_end_date(
-            soup)  # 'end_date', Дата и время окончания подачи заявок(по местному времени заказчика)
-        card_data['timezone'] = get_timezone(soup)  # 'timezone', Часовой пояс заказчика
-        card_data['result_date'] = get_result_date(soup)  # 'result_date', Дата подведения итогов
+            soup, comment)  # 'end_date', Дата и время окончания подачи заявок(по местному времени заказчика)
+        card_data['timezone'] = get_timezone(soup, comment)  # 'timezone', Часовой пояс заказчика
+        card_data['result_date'] = get_result_date(soup, comment)  # 'result_date', Дата подведения итогов
     except AttributeError:
         msg = f'Failed to make an entry from the purchasing #{hash(card)}'
         logging.error(logger(msg))
@@ -736,6 +783,9 @@ def get_card_data(card=None) -> dict:
     except AttributeError:
         msg = f'Data for the field "docs" could not be found by url'
         logging.error(logger(msg))
+        comment.write('\t• ссылки на документы;')
+
+    card_data['comment'] = comment.comment  # 'comment',  # Комментарий к сделке
 
     return card_data
 

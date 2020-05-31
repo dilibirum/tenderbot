@@ -12,7 +12,7 @@ class Commentator(object):
         self.sep = sep
 
     def write(self, comment):
-        if self.comment == 'Необходимо уточнить: \n':
+        if self.comment == 'Необходимо заполнить: \n':
             self.comment += comment
         else:
             self.comment += self.sep + comment
