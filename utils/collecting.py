@@ -8,11 +8,11 @@ class Commentator(object):
     """
 
     def __init__(self, comment='', sep='\n'):
-        self.comment = comment
+        self.comment = f'Необходимо уточнить: \n{comment}'
         self.sep = sep
 
     def write(self, comment):
-        if self.comment == '':
+        if self.comment == 'Необходимо уточнить: \n':
             self.comment += comment
         else:
             self.comment += self.sep + comment

@@ -40,6 +40,10 @@ class BX24(object):
             response = requests.get(query, params=data).json()
         return response
 
+    def get_id(self):
+        # TODO: реализовать функцию, которая по литералу (имя пользователя или тип сделки) возвращает ID в Битрикс24
+        raise NotImplemented
+
 
 def http_build_query(query_data,
                      numeric_prefix=None,
