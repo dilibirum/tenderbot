@@ -733,9 +733,8 @@ def get_card_data(card=None) -> dict:
             card_data['docs'] = get_docs_hrefs223(soup)
         except AttributeError:
             card_data['docs'] = get_docs_hrefs44(soup)
-
     except AttributeError:
-        msg = f'Data for the field "docs" could not be found by url {docs_url}'
+        msg = f'Data for the field "docs" could not be found by url'
         logging.error(logger(msg))
 
     return card_data
