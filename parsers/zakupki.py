@@ -661,8 +661,8 @@ def get_result_date(soup: BeautifulSoup) -> str:
         try:
             result = datetime_formatter(soup.find('span', {'class': 'section__title'},
                                                   text="""
-                                Дата и время рассмотрения и оценки первых частей заявок
-                            """)
+                            Дата и время рассмотрения и оценки первых частей заявок
+                        """)
                                         .find_next('span', {'class': 'section__info'})
                                         .text
                                         .strip())
