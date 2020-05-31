@@ -718,6 +718,7 @@ def get_result_date(soup: BeautifulSoup, comment: Commentator) -> str:
     return result
 
 
+# TODO: передалать, убрать костыли
 def get_comment(soup: BeautifulSoup, comment: Commentator) -> str:
     """Функция находит преимущества, требования к участникам
 
@@ -726,6 +727,7 @@ def get_comment(soup: BeautifulSoup, comment: Commentator) -> str:
     :return: Преимущества, требования к участникам
     """
     result = ''
+    _result = ''
     try:
         result += '\nПреимущества:\n\n'
         result += soup.find('span', {'class': 'section__title'}, text='Преимущества') \
@@ -748,11 +750,12 @@ def get_comment(soup: BeautifulSoup, comment: Commentator) -> str:
             .replace('\n', '') \
             .replace('\t', '') \
             .replace('\xa0', ' ') + '\n'
+        _result = result
     except AttributeError:
         msg = 'Data for the field "timezone" could not be found'
         logging.error(logger(msg))
         comment.write('\t• требования и ограничения к участникам;')
-    return result
+    return _result
 
 
 # TODO: 30 мая 2020 года изменилась структура сайта!!!
