@@ -1,74 +1,23 @@
-INFO:root:2020-05-31 12:28:50: Card #-1227252402240168201 starts recording
-INFO:root:2020-05-31 12:28:50: Card #-1227252402240168201 starts recording by url
-INFO:root:2020-05-31 12:28:50: Card #-1227252402240168201 starts recording by documets url
-INFO:root:2020-05-31 12:28:50: Card #6455788848384476363 starts recording
-INFO:root:2020-05-31 12:28:50: Card #6455788848384476363 starts recording by url
-ERROR:root:2020-05-31 12:28:50 Cannot format 18 to %Y-%m-%d. time data '18' does not match format '%d.%m.%Y'
-INFO:root:2020-05-31 12:28:51: Card #6455788848384476363 starts recording by documets url
-INFO:root:2020-05-31 12:30:56: Card #-7137720855384304603 starts recording
-INFO:root:2020-05-31 12:30:56: Card #-7137720855384304603 starts recording by url
-ERROR:root:2020-05-31 12:30:56: Data for the field "platform_url" could not be found
-INFO:root:2020-05-31 12:30:57: Card #-7137720855384304603 starts recording by documets url
-INFO:root:2020-05-31 12:30:57: Card #-7512753325892067892 starts recording
-INFO:root:2020-05-31 12:30:57: Card #-7512753325892067892 starts recording by url
-INFO:root:2020-05-31 12:30:57: Card #-7512753325892067892 starts recording by documets url
-INFO:root:2020-05-31 12:39:17: Card #-3195597679325476259 starts recording
-INFO:root:2020-05-31 12:39:17: Card #-3195597679325476259 starts recording by url
-ERROR:root:2020-05-31 12:39:17: Data for the field "platform_url" could not be found
-INFO:root:2020-05-31 12:39:18: Card #-3195597679325476259 starts recording by documets url
-INFO:root:2020-05-31 12:39:18: Card #4248621797230725688 starts recording
-INFO:root:2020-05-31 12:39:18: Card #4248621797230725688 starts recording by url
-INFO:root:2020-05-31 12:39:18: Card #4248621797230725688 starts recording by documets url
-INFO:root:2020-05-31 12:42:20: Card #-3195597679325476259 starts recording
-INFO:root:2020-05-31 12:42:20: Card #-3195597679325476259 starts recording by url
-ERROR:root:2020-05-31 12:42:20: Data for the field "platform_url" could not be found
-INFO:root:2020-05-31 12:42:21: Card #-3195597679325476259 starts recording by documets url
-INFO:root:2020-05-31 12:42:21: Card #4248621797230725688 starts recording
-INFO:root:2020-05-31 12:42:21: Card #4248621797230725688 starts recording by url
-INFO:root:2020-05-31 12:42:21: Card #4248621797230725688 starts recording by documets url
-INFO:root:2020-05-31 12:45:10: Card #-1469768694277185732 starts recording
-INFO:root:2020-05-31 12:47:39: Card #-3195597679325476259 starts recording
-INFO:root:2020-05-31 12:47:40: Card #-3195597679325476259 starts recording by url
-ERROR:root:2020-05-31 12:47:40: Data for the field "platform_url" could not be found
-INFO:root:2020-05-31 12:47:40: Card #-3195597679325476259 starts recording by documets url
-INFO:root:2020-05-31 12:47:40: Card #4248621797230725688 starts recording
-INFO:root:2020-05-31 12:47:40: Card #4248621797230725688 starts recording by url
-INFO:root:2020-05-31 12:47:40: Card #4248621797230725688 starts recording by documets url
-INFO:root:2020-05-31 13:04:37: Card #7124702407214837123 starts recording
-INFO:root:2020-05-31 13:09:53: Card #9090493873485966057 starts recording
-INFO:root:2020-05-31 13:09:53: Card #-199093611255249473 starts recording
-INFO:root:2020-05-31 13:09:53: Card #-4620482375160119586 starts recording
-INFO:root:2020-05-31 14:03:29: Card #-8828755319863792798 starts recording
-INFO:root:2020-05-31 14:03:29: Card #-4295564945381257529 starts recording
-INFO:root:2020-05-31 14:03:29: Card #2497782015346181061 starts recording
-INFO:root:2020-05-31 14:10:27: Card #-6482314498968477346 starts recording
-INFO:root:2020-05-31 14:10:27: Card #5064545073628355272 starts recording
-INFO:root:2020-05-31 14:10:27: Card #3804724288217436697 starts recording
-INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording
-INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording by url
-ERROR:root:2020-05-31 14:19:43: Data for the field "platform_url" could not be found
-INFO:root:2020-05-31 14:19:43: Card #8456836065007299694 starts recording by documets url
-INFO:root:2020-05-31 14:19:43: Card #-8100810864124746317 starts recording
-INFO:root:2020-05-31 14:19:43: Card #-8100810864124746317 starts recording by url
-INFO:root:2020-05-31 14:19:44: Card #-8100810864124746317 starts recording by documets url
-INFO:root:2020-05-31 14:19:44: Card #3299599308134990262 starts recording
-INFO:root:2020-05-31 14:19:45: Card #3299599308134990262 starts recording by url
-ERROR:root:2020-05-31 14:19:45: Data for the field "type" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "description" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "init_date" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "platform" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "platform_url" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "platform_url" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "author_name" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "inn" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "author_ogrn" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "address" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "author_manager" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "author_email" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "author_phone" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "start_date" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "end_date" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "timezone" could not be found
-ERROR:root:2020-05-31 14:19:45: Data for the field "result_date" could not be found
-INFO:root:2020-05-31 14:19:45: Card #3299599308134990262 starts recording by documets url
-ERROR:root:2020-05-31 14:19:45: Data for the field "docs" could not be found
+INFO:root:2020-05-31 16:58:56: Card #-2210792017746626723 starts recording
+INFO:root:2020-05-31 16:58:56: Card #-2210792017746626723 starts recording by url
+ERROR:root:2020-05-31 16:58:56: Data for the field "tender_deposit" could not be found
+ERROR:root:2020-05-31 16:58:56: Data for the field "contract_deposit" could not be found
+ERROR:root:2020-05-31 16:58:56: Data for the field "warranty_deposit" could not be found
+INFO:root:2020-05-31 16:58:56: Card #-2210792017746626723 starts recording by documets url https://zakupki.gov.ru/223/purchase/public/purchase/info/documents.html?regNumber=32009195948
+INFO:root:2020-05-31 16:58:56: Card #8322448934797138726 starts recording
+INFO:root:2020-05-31 16:58:56: Card #8322448934797138726 starts recording by url
+ERROR:root:2020-05-31 16:58:56: Data for the field "contract_deposit" could not be found
+ERROR:root:2020-05-31 16:58:56: Data for the field "warranty_deposit" could not be found
+INFO:root:2020-05-31 16:58:56: Card #8322448934797138726 starts recording by documets url https://zakupki.gov.ru/223/purchase/public/purchase/info/documents.html?regNumber=32009198398
+INFO:root:2020-05-31 16:58:56: Card #1001323147724809752 starts recording
+INFO:root:2020-05-31 16:58:56: Card #1001323147724809752 starts recording by url
+INFO:root:2020-05-31 16:58:57: raw_data = 30, type = <class 'str'>
+INFO:root:2020-05-31 16:58:57: contract_deposit = 0.3, type = <class 'float'>
+INFO:root:2020-05-31 16:58:57: card_data['price'] = 20000000.0, type = <class 'float'>
+INFO:root:2020-05-31 16:58:57: contract_deposit = 6000000.0, type = <class 'float'>
+INFO:root:2020-05-31 16:58:57: contract_deposit = 6000000.0, type = <class 'float'>
+INFO:root:2020-05-31 16:58:57: card_data['contract_deposit'] = 6000000.0, type = <class 'float'>
+ERROR:root:2020-05-31 16:58:57: Data for the field "inn" could not be found
+ERROR:root:2020-05-31 16:58:57: Data for the field "author_ogrn" could not be found
+ERROR:root:2020-05-31 16:58:57: Data for the field "timezone" could not be found
+INFO:root:2020-05-31 16:58:57: Card #1001323147724809752 starts recording by documets url https://zakupki.gov.ru/epz/order/notice/ok504/view/documents.html?regNumber=0273100001620000006
