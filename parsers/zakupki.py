@@ -1,7 +1,7 @@
 from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+import time
 from parsers.utils import get_request
 from utils.converter import to_numeric, date_formatter
 from utils.collecting import logger
@@ -34,14 +34,11 @@ def search_query(search_string: str,
             + f'&pageNumber={page_number}' \
             + '&sortDirection=true' \
             + '&recordsPerPage=_100' \
-            + '&showLotsInfoHidden=false' \
+            + '&showLotsInfoHidden=true' \
             + '&sortBy=PUBLISH_DATE' \
             + '&fz44=on' \
             + '&fz223=on' \
             + '&af=on' \
-            + '&placingWayList=PO44%2CPOP44%2CZPESMBO%2CZKI44%2COKDI504%2CZKKUI44%2' \
-            + 'CZP504%2CZPP504%2CEZP504%2CZKESMBO%2CKESMBO%2COA%2COK111%2COKU111%2COKD' \
-            + '111%2CZK111%2CZKB111%2CZP111%2CPO111%2CZP44%2CZPP44%2CPK44%2CPO44%2CPOP44%2CZP44%2CZPP44%2CPR' \
             + '&selectedSubjectsIdNameHidden=%7B%7D' \
             + f'&publishDateFrom={start_date}' \
             + f'&publishDateTo={end_date}' \
@@ -112,10 +109,11 @@ def create_card() -> dict:
         'url',  # URL-закупки на ЕИС в сфере закупок
         'docs',  # URL-ссылка на документацию
         'comment',  # Комментарий к сделке
-        'date',  # Дата записи карточки
+        'time',  # Дата записи карточки в формате unicode
     ])
 
 
+# TODO: 30 мая 2020 года изменилась структура сайта!!!
 def get_card_data(card=None) -> dict:
     """Функция парсит информацию о закупке и записывает с структурированный словарь
 
@@ -125,6 +123,7 @@ def get_card_data(card=None) -> dict:
     card_data = create_card()
     msg = f'Card #{hash(card)} starts recording'
     logging.info(logger(msg))
+    card_data['time'] = time.time()
 
     # пишем данные из карточки закупки
     try:
@@ -165,236 +164,236 @@ def get_card_data(card=None) -> dict:
         msg = 'Data for the field "price" could not be found'
         logging.error(logger(msg))
 
-    # пишем данные из по ссылке закупки
-    try:
-        lot_url = card_data['url']
-        soup = get_soup(get_request(lot_url))
-        msg = f'Card #{hash(card)} starts recording by url'
-        logging.info(logger(msg))
-
-        # читаем таблицу "Общие сведения о закупке"
-        try:
-            table = soup.find('h2', text='Общие сведения о закупке') \
-                .find_next('table')
-
-            try:
-                card_data['type'] = table.find('td', text='Способ размещения закупки') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "type" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['description'] = table.find('td', text='Наименование закупки') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "description" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['init_date'] = date_formatter(table.find('td', text='Дата размещения извещения')
-                                                        .find_next('td')
-                                                        .text
-                                                        .split()[0]
-                                                        .strip())
-            except AttributeError:
-                msg = 'Data for the field "init_date" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['platform'] = table.find('td', text='Наименование электронной площадки в ' +
-                                                              'информационно-телекоммуникационной сети «Интернет»') \
-                                        .find_next('td') \
-                                        .text \
-                                        .strip()
-            except AttributeError:
-                msg = 'Data for the field "platform" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['platform_url'] = table.find('td', text='Адрес электронной площадки в ' +
-                                                                  'информационно-телекоммуникационной сети ' +
-                                                                  '«Интернет»') \
-                                            .find_next('td') \
-                                            .text \
-                                            .strip()
-            except AttributeError:
-                msg = 'Data for the field "platform_url" could not be found'
-                logging.error(logger(msg))
-
-            # 'tender_deposit',  # Обеспечение заявки
-            try:
-                card_data['tender_deposit'] = table.find('td', text='Обеспечение заявки') \
-                                            .find_next('td') \
-                                            .text \
-                                            .strip()
-            except AttributeError:
-                msg = 'Data for the field "platform_url" could not be found'
-                logging.error(logger(msg))
-
-        except AttributeError:
-            msg = 'Cannot find "Common tender data" table'
-            logging.error(logger(msg))
-
-        # читаем таблицу "Заказчик"
-        try:
-            table = soup.find('h2', text='Заказчик') \
-                .find_next('table')
-
-            try:
-                card_data['author_name'] = table.find('td', text='Наименование организации') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "author_name" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['author_inn'] = table.find('td', text='ИНН') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "inn" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['author_ogrn'] = table.find('td', text='ОГРН') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "author_ogrn" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['address'] = table.find('td', text='Место нахождения') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "address" could not be found'
-                logging.error(logger(msg))
-
-        except AttributeError:
-            msg = 'Cannot find "Author" table'
-            logging.error(logger(msg))
-
-        # читаем таблицу "Контактная информация"
-        try:
-            table = soup.find('h2', text='Контактная информация') \
-                .find_next('table')
-
-            try:
-                card_data['author_manager'] = table.find('td', text='Контактное лицо') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "author_manager" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['author_email'] = table.find('td', text='Электронная почта') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "author_email" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['author_phone'] = table.find('td', text='Телефон') \
-                    .find_next('td') \
-                    .text \
-                    .strip()
-            except AttributeError:
-                msg = 'Data for the field "author_phone" could not be found'
-                logging.error(logger(msg))
-
-        except AttributeError:
-            msg = 'Cannot find "Contact data" table'
-            logging.error(logger(msg))
-
-        # читаем таблицу "Порядок проведения процедуры"
-        try:
-            table = soup.find('h2', text='Порядок проведения процедуры') \
-                .find_next('table')
-
-            try:
-                card_data['start_date'] = date_formatter(table.find('td', text='Дата начала срока подачи заявок')
-                                                         .find_next('td')
-                                                         .text
-                                                         .split()[0]
-                                                         .strip())
-            except AttributeError:
-                msg = 'Data for the field "start_date" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['end_date'] = date_formatter(table.find('span', text='(по местному времени заказчика)')
-                                                       .find_next('td')
-                                                       .text
-                                                       .split()[0]
-                                                       .strip())
-            except AttributeError:
-                msg = 'Data for the field "end_date" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['timezone'] = table.find('td', text='Дата начала срока подачи заявок') \
-                     .find_next('td') \
-                     .text \
-                     .split()[1] \
-                     .replace('(', '') \
-                     .replace(')', '') \
-                     .strip()
-            except AttributeError:
-                msg = 'Data for the field "timezone" could not be found'
-                logging.error(logger(msg))
-
-            try:
-                card_data['result_date'] = date_formatter(table.find('td', text='Дата подведения итогов')
-                                                          .find_next('td')
-                                                          .text
-                                                          .split()[0]
-                                                          .strip())
-            except AttributeError:
-                msg = 'Data for the field "result_date" could not be found'
-                logging.error(logger(msg))
-
-        except AttributeError:
-            msg = 'Cannot find "Tender rules" table'
-            logging.error(logger(msg))
-
-        # читаем таблицу "Предоставление документации"
-        ###
-
-    except AttributeError:
-        msg = f'Failed to make an entry from the purchasing #{hash(card)}'
-        logging.error(logger(msg))
-
-    # Пишем данные из раздела документы карточки закупки
-    try:
-        docs_url = make_part_url(card_data['url'])
-        soup = get_soup(get_request(docs_url))
-        msg = f'Card #{hash(card)} starts recording by documets url'
-        logging.info(logger(msg))
-
-        try:
-            card_data['docs'] = get_docs_hrefs(soup)
-        except AttributeError:
-            msg = 'Data for the field "docs" could not be found'
-            logging.error(logger(msg))
-
-    except AttributeError:
-        msg = f'Failed to make an entry from the document link #{hash(card)}'
-        logging.error(logger(msg))
+    # # пишем данные из по ссылке закупки
+    # try:
+    #     lot_url = card_data['url']
+    #     soup = get_soup(get_request(lot_url))
+    #     msg = f'Card #{hash(card)} starts recording by url'
+    #     logging.info(logger(msg))
+    #
+    #     # читаем таблицу "Общие сведения о закупке"
+    #     try:
+    #         table = soup.find('h2', text='Общие сведения о закупке') \
+    #             .find_next('table')
+    #
+    #         try:
+    #             card_data['type'] = table.find('td', text='Способ размещения закупки') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "type" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['description'] = table.find('td', text='Наименование закупки') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "description" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['init_date'] = date_formatter(table.find('td', text='Дата размещения извещения')
+    #                                                     .find_next('td')
+    #                                                     .text
+    #                                                     .split()[0]
+    #                                                     .strip())
+    #         except AttributeError:
+    #             msg = 'Data for the field "init_date" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['platform'] = table.find('td', text='Наименование электронной площадки в ' +
+    #                                                           'информационно-телекоммуникационной сети «Интернет»') \
+    #                                     .find_next('td') \
+    #                                     .text \
+    #                                     .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "platform" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['platform_url'] = table.find('td', text='Адрес электронной площадки в ' +
+    #                                                               'информационно-телекоммуникационной сети ' +
+    #                                                               '«Интернет»') \
+    #                                         .find_next('td') \
+    #                                         .text \
+    #                                         .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "platform_url" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         # 'tender_deposit',  # Обеспечение заявки
+    #         try:
+    #             card_data['tender_deposit'] = table.find('td', text='Обеспечение заявки') \
+    #                                         .find_next('td') \
+    #                                         .text \
+    #                                         .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "platform_url" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #     except AttributeError:
+    #         msg = 'Cannot find "Common tender data" table'
+    #         logging.error(logger(msg))
+    #
+    #     # читаем таблицу "Заказчик"
+    #     try:
+    #         table = soup.find('h2', text='Заказчик') \
+    #             .find_next('table')
+    #
+    #         try:
+    #             card_data['author_name'] = table.find('td', text='Наименование организации') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "author_name" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['author_inn'] = table.find('td', text='ИНН') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "inn" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['author_ogrn'] = table.find('td', text='ОГРН') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "author_ogrn" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['address'] = table.find('td', text='Место нахождения') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "address" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #     except AttributeError:
+    #         msg = 'Cannot find "Author" table'
+    #         logging.error(logger(msg))
+    #
+    #     # читаем таблицу "Контактная информация"
+    #     try:
+    #         table = soup.find('h2', text='Контактная информация') \
+    #             .find_next('table')
+    #
+    #         try:
+    #             card_data['author_manager'] = table.find('td', text='Контактное лицо') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "author_manager" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['author_email'] = table.find('td', text='Электронная почта') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "author_email" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['author_phone'] = table.find('td', text='Телефон') \
+    #                 .find_next('td') \
+    #                 .text \
+    #                 .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "author_phone" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #     except AttributeError:
+    #         msg = 'Cannot find "Contact data" table'
+    #         logging.error(logger(msg))
+    #
+    #     # читаем таблицу "Порядок проведения процедуры"
+    #     try:
+    #         table = soup.find('h2', text='Порядок проведения процедуры') \
+    #             .find_next('table')
+    #
+    #         try:
+    #             card_data['start_date'] = date_formatter(table.find('td', text='Дата начала срока подачи заявок')
+    #                                                      .find_next('td')
+    #                                                      .text
+    #                                                      .split()[0]
+    #                                                      .strip())
+    #         except AttributeError:
+    #             msg = 'Data for the field "start_date" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['end_date'] = date_formatter(table.find('span', text='(по местному времени заказчика)')
+    #                                                    .find_next('td')
+    #                                                    .text
+    #                                                    .split()[0]
+    #                                                    .strip())
+    #         except AttributeError:
+    #             msg = 'Data for the field "end_date" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['timezone'] = table.find('td', text='Дата начала срока подачи заявок') \
+    #                  .find_next('td') \
+    #                  .text \
+    #                  .split()[1] \
+    #                  .replace('(', '') \
+    #                  .replace(')', '') \
+    #                  .strip()
+    #         except AttributeError:
+    #             msg = 'Data for the field "timezone" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #         try:
+    #             card_data['result_date'] = date_formatter(table.find('td', text='Дата подведения итогов')
+    #                                                       .find_next('td')
+    #                                                       .text
+    #                                                       .split()[0]
+    #                                                       .strip())
+    #         except AttributeError:
+    #             msg = 'Data for the field "result_date" could not be found'
+    #             logging.error(logger(msg))
+    #
+    #     except AttributeError:
+    #         msg = 'Cannot find "Tender rules" table'
+    #         logging.error(logger(msg))
+    #
+    #     # читаем таблицу "Предоставление документации"
+    #     ###
+    #
+    # except AttributeError:
+    #     msg = f'Failed to make an entry from the purchasing #{hash(card)}'
+    #     logging.error(logger(msg))
+    #
+    # # Пишем данные из раздела документы карточки закупки
+    # try:
+    #     docs_url = make_part_url(card_data['url'])
+    #     soup = get_soup(get_request(docs_url))
+    #     msg = f'Card #{hash(card)} starts recording by documets url'
+    #     logging.info(logger(msg))
+    #
+    #     try:
+    #         card_data['docs'] = get_docs_hrefs(soup)
+    #     except AttributeError:
+    #         msg = 'Data for the field "docs" could not be found'
+    #         logging.error(logger(msg))
+    #
+    # except AttributeError:
+    #     msg = f'Failed to make an entry from the document link #{hash(card)}'
+    #     logging.error(logger(msg))
 
     return card_data
 
