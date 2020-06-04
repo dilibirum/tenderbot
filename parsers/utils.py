@@ -27,3 +27,17 @@ def get_request(url: str,
     headers = create_headers()
     response = requests.get(url, timeout=timeout, headers=headers)
     return response
+
+
+def get_api_request(url: str, api_method: str, params: dict, timeout=30) -> requests.models.Response:
+    """Функция делает GET-запрос по API
+
+    :param url: str -- URL-адрес API сервиса
+    :param api_method: str -- метод API
+    :param params: dict -- параметры запроса
+    :param timeout: int -- задержка, по умолчанию 30 сек
+    :return: ответ сервера, объект requests.models.Response
+    """
+    headers = create_headers()
+    response = requests.get(url + api_method, params=params, timeout=timeout, headers=headers)
+    return response
