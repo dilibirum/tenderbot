@@ -53,3 +53,4 @@ def datetime_formatter(date: str, formatter='%Y-%m-%d %H:%M') -> str:
     else:
         result_date = date_formatter(date)
     return result_date
+
