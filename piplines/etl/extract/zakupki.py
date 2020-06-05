@@ -3,12 +3,12 @@ import requests
 from bs4 import BeautifulSoup
 import numpy as np
 import time
-from parsers.utils import get_request
-from utils.converter import to_numeric, date_formatter, datetime_formatter
+from piplines.etl.extract.utils import get_request
+from piplines.etl.transform.converter import to_numeric, date_formatter, datetime_formatter
 from utils.collecting import logger, Commentator
 import logging
 
-logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
+logging.basicConfig(filename='../../../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
 
 
 def search_query(search_string: str,

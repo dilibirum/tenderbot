@@ -3,7 +3,7 @@ import json
 import random
 
 
-with open('../configs/user-agents.txt') as f:
+with open('../../../configs/user-agents.txt') as f:
     USER_AGENTS = json.loads(f.read())
 
 
@@ -29,7 +29,7 @@ def get_request(url: str,
     return response
 
 
-def get_api_request(url: str, api_method: str, params: dict, timeout=30) -> requests.models.Response:
+def get_api_request(url: str, params: dict, api_method='', timeout=30) -> requests.models.Response:
     """Функция делает GET-запрос по API
 
     :param url: str -- URL-адрес API сервиса

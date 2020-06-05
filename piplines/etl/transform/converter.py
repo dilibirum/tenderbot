@@ -2,7 +2,7 @@ from datetime import datetime
 import numpy as np
 import logging
 
-logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
+logging.basicConfig(filename='../../../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
 
 
 def to_numeric(string: str) -> float:

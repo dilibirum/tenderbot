@@ -4,7 +4,7 @@ from sqlalchemy.exc import OperationalError
 from datetime import datetime
 import logging
 
-logging.basicConfig(filename='../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
+logging.basicConfig(filename='../../../data/logs/tenderbot.log', level=logging.INFO)  # add filemode="w" to overwrite
 
 
 class DataBase(object):
